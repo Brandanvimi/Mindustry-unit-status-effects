@@ -237,7 +237,9 @@ public class UnitType extends UnlockableContent implements Senseable{
     /** if false, the unit body is not drawn. */
     drawBody = true,
     /** if false, the unit is not drawn on the minimap. */
-    drawMinimap = true;
+    drawMinimap = true,
+    /** if true, the unit status effects icons are draw near it. */
+    drawStatusEffects = true;
 
     /** The default AI controller to assign on creation. */
     public Prov<? extends UnitController> aiController = () -> !flying ? new GroundAI() : new FlyingAI();
@@ -1264,6 +1266,7 @@ public class UnitType extends UnlockableContent implements Senseable{
         drawWeapons(unit);
         if(drawItems) drawItems(unit);
         drawLight(unit);
+        if(drawStatusEffects) drawStatusEffects(unit);
 
         if(unit.shieldAlpha > 0 && drawShields){
             drawShield(unit);
@@ -1681,6 +1684,32 @@ public class UnitType extends UnlockableContent implements Senseable{
         //this is horribly scuffed.
         if(renderer != null && renderer.overlays != null){
             renderer.overlays.checkApplySelection(unit);
+        }
+    }
+
+    public void drawStatusEffects(Unit unit){
+        Bits statuses = new Bits();
+        Bits applied = unit.statusBits();
+        if(!statuses.equals(applied)){
+            if(applied != null){
+                //this is awful but idk how to fix so here it goes
+                Seq<StatusEffect> appliedStatuses = unit.
+                int i = 0;
+                while(appliedStatuses.pop() != null){
+                    StatusEffect status = content.statusEffects().get(i);
+                    if(applied.get(status.id) && !status.isHidden()){
+                        //TODO better formula for icon position
+                        Draw.rect(status.uiIcon,
+                        unit.x + unit.type.cellRegion.width * Mathf.sin(i * Mathf.PI/5),
+                        unit.y + unit.type.cellRegion.width * Mathf.cos(i * Mathf.PI/5));
+                        i++;
+                    }
+                }
+
+                statuses.set(applied);
+            }else{
+                statuses.clear();
+            }
         }
     }
 

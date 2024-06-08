@@ -1693,16 +1693,15 @@ public class UnitType extends UnlockableContent implements Senseable{
         if(!statuses.equals(applied)){
             if(applied != null){
                 //this is awful but idk how to fix so here it goes
-                Seq<StatusEffect> appliedStatuses = unit.
-                int i = 0;
-                while(appliedStatuses.pop() != null){
+                //Seq<StatusEffect> appliedStatuses = unit.
+                //TODO only take into account effects that are on the unit
+                for(int i = 0; i < applied.length(); i++){
                     StatusEffect status = content.statusEffects().get(i);
                     if(applied.get(status.id) && !status.isHidden()){
                         //TODO better formula for icon position
                         Draw.rect(status.uiIcon,
                         unit.x + unit.type.cellRegion.width * Mathf.sin(i * Mathf.PI/5),
                         unit.y + unit.type.cellRegion.width * Mathf.cos(i * Mathf.PI/5));
-                        i++;
                     }
                 }
 

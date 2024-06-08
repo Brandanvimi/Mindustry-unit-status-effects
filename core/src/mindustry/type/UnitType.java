@@ -1692,16 +1692,16 @@ public class UnitType extends UnlockableContent implements Senseable{
         Bits applied = unit.statusBits();
         if(!statuses.equals(applied)){
             if(applied != null){
-                //this is awful but idk how to fix so here it goes
-                //TODO only take into account effects that are on the unit
                 int unitStatusesCount = 0;
                 for(int i = 0; i < applied.length(); i++){
                     StatusEffect status = content.statusEffects().get(i);
                     if(applied.get(status.id) && !status.isHidden()){
                         //TODO better formula for icon position
+                        //TODO icons should be positioned in a way they surround the unit, equally apart from each other
+                        //TODo icons arent draw the right distance from units
                         Draw.rect(status.uiIcon,
-                        unit.x + unit.type.cellRegion.width * Mathf.sin(unitStatusesCount * Mathf.PI/5),
-                        unit.y + unit.type.cellRegion.width * Mathf.cos(unitStatusesCount * Mathf.PI/5));
+                        unit.x + unit.type.hitSize * Mathf.sin(unitStatusesCount * Mathf.PI/5),
+                        unit.y + unit.type.hitSize * Mathf.cos(unitStatusesCount * Mathf.PI/5));
                         unitStatusesCount++;
                     }
                 }

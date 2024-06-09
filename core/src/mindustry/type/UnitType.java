@@ -1690,22 +1690,29 @@ public class UnitType extends UnlockableContent implements Senseable{
     public void drawStatusEffects(Unit unit){
         Bits statuses = new Bits();
         Bits applied = unit.statusBits();
+
         if(!statuses.equals(applied)){
             if(applied != null){
                 int unitStatusesCount = 0;
-                for(int i = 0; i < applied.length(); i++){
+                IntSeq unitStatusesIndexes = new IntSeq();
+
+                for(int i = 0; i < applied.length(); i++) {
                     StatusEffect status = content.statusEffects().get(i);
-                    if(applied.get(status.id) && !status.isHidden()){
-                        //TODO better formula for icon position
-                        //TODO icons should be positioned in a way they surround the unit, equally apart from each other
-                        //TODo icons arent draw the right distance from units
-                        Draw.rect(status.uiIcon,
-                        unit.x + unit.type.hitSize * Mathf.sin(unitStatusesCount * Mathf.PI/5),
-                        unit.y + unit.type.hitSize * Mathf.cos(unitStatusesCount * Mathf.PI/5));
+
+                    if (applied.get(status.id) && !status.isHidden()) {
                         unitStatusesCount++;
+                        unitStatusesIndexes.add(i);
                     }
                 }
 
+                for(int i; i < unitStatusesIndexes.size; i++) {
+                    StatusEffect status = content.statusEffects().get(unitStatusesIndexes.get(i));
+                    //TODO better formula for icon position
+                    //TODO icons arent draw the right distance from units
+                    Draw.rect(status.uiIcon,
+                            unit.x + unit.type.hitSize * Mathf.sin(i * Mathf.PI / unitStatusesCount),
+                            unit.y + unit.type.hitSize * Mathf.cos(i * Mathf.PI / unitStatusesCount));
+                }
                 statuses.set(applied);
             }else{
                 statuses.clear();
